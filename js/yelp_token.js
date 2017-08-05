@@ -38,7 +38,7 @@ function get_yelp_token() {
         var expiryDate = new Date();
         var expiryDays = response.expires_in/86400;  // get days from seconds
         localStorage['token_expiration'] = expiryDate.setDate(expiryDate.getDate() + expiryDays);
-    }, 'json');
+    }, 'jsonp');
 }
 
 
