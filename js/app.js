@@ -1,38 +1,7 @@
-/*
-var ViewModel = function() {
-    var self = this;  // self represents the view-model to access outer-this
-
-    this.clickCount = ko.observable(0);
-    this.name = ko.observable('Dude');
-    this.imgSrc = ko.observable('img/foo_bar.jpg');
-    this.imgAttribution = ko.observable('https://www.imgur.com/foo/bar/jo.jpg');
-
-    this.currentCat = ko.observable( new Cat() );
-
-    this.incrementCounter = function() {
-        self.clickCount(self.clickCount() + 1);
-    };
-}
-
-
-// note the "this" as second argument of the computed-function, so that you
-// can use "this" inside the function with it refering to the outer-this
-// (this.fullName)
-// ko.computed can compute cool stuff out of your model-data and you will have
-// access to it like a variable "this.fullName"
-function AppViewModel() {
-    this.fullName = ko.computed(function() {
-        return this.firstName() + " " + this.lastName();
-    }, this);
-}
-
-ko.applyBindings(new ViewModel);
-*/
-
-// Model: holds all the data, no logic => written inside JS file
-// ViewModel: holds all the logic => written inside JS file
+// Model: holds all the data, no logic
+// ViewModel: holds all the logic
 // View: HTML/CSS -> use "data-bind" to connect to Model/ViewModel
-// Notes:
+// Note to my self:
 // The View actually just shows an up-to-date version of the ViewModel,
 // which tells how data from the Model shall be presented. If data or the
 // behavior of the data (ViewModel) change, the View is updated
@@ -41,7 +10,7 @@ ko.applyBindings(new ViewModel);
 // https://stackoverflow.com/questions/9589419/difference-between-knockout-view-models-declared-as-object-literals-vs-functions
 
 // ============================================================================
-// FIRST initialize google map
+// function to initialize google map
 // https://developers.google.com/maps/documentation/javascript/tutorial
 var map;
   // there are several zoom levels:
@@ -53,57 +22,38 @@ function initMap() {
         mapTypeControl: false
     });
 }
-// finished with google map
 // ============================================================================
-
-// YELP:
-// Client ID
-// TZ53SO335VUAeUt14E0eGQ
-// Client Secret
-// mfM2XOraxM0KhCsrXjBKXnuCAGM208cTYPxq7jXr1Dc2XqWHt4amItP9Z9IdyhBD
-
-
 
 
 //example-data, all in Berlin, district Alt-Tegel
 modelData = [
     {
         name: "Bergmann Pizza",
-        yelpID: "bergmann-pizza-berlin-2",
         category: "food",
-        fsquareID: "4ece1682e3007feb7ad1bd94",
         lat: 52.589969,
         lng: 13.281440
     },
     {
         name: "L'Angolo del Gelato",
-        yelpID: "l-angolo-del-gelato-berlin-2",
         category: "food",
-        fsquareID: "4e89c3e1d22d940664f12faf",
         lat: 52.589428,
         lng: 13.281779
     },
     {
         name: "Alte Spree Apotheke",
-        yelpID: "alte-spree-apotheke-berlin",
         category: "other",
-        fsquareID: "532d9a8e498ec8516363d00d",
         lat: 52.592183,
         lng: 13.282605
     },
     {
         name: "Borsighallen",
-        yelpID: "hallen-am-borsigturm-berlin?osq=borsighallen",
         category: "shopping",
-        fsquareID: "4b8d374ff964a520deed32e3",
         lat: 52.584968,
         lng: 13.286043
     },
     {
         name: "Lucky Chinese",
-        yelpID: "lucky-chinese-berlin",
         category: "food",
-        fsquareID: "4cfb87c0feec6dcb2b314736",
         lat: 52.588512,
         lng: 13.278548
     },
@@ -135,17 +85,18 @@ modelData = [
 
 
 // foursquare credentials
+// could be stored server side, but actually can be read from get-header, ...
 var clientID = "15S4QDKN4EJG4MNX2XPXUSLBWB3ADMHJYJY5PA2FOZNPHLTK";
 var clientSecret = "PPCH5JDLNLMPTFBWFBEUO4GOO3B4HIVNZ0IRYJMLRNGTWVHK&v=20170801";
 
 
 // the model, which defines information and functions on our model-data
+// note the "this" as second argument of the computed-function, so that you
+// can use "this" inside the function with it refering to the outer-this
 var model = function(modelData) {
     var self = this;
     this.name = modelData.name;
-    this.id = modelData.fsquareID;
     this.category = modelData.category;  // one of three categories (food, shopping, other)
-    this.visible = ko.observable();
     this.lat = modelData.lat;
     this.lng = modelData.lng;
     this.street = '';
@@ -153,6 +104,7 @@ var model = function(modelData) {
     this.openingTimes = '';  // Contains the opening hours of this point of interest
     this.rating = '';  // Numerical rating of the venue (0 through 10)
     this.cat = '';  // more precise category (e.g. Pizza Place)
+    this.visible = ko.observable();
 
     // API endpoint of forsquare, check out: https://developer.foursquare.com/docs/venues/search
     // OAuth doesn't allow CORS, so one can't directly fetch location info via the forsquareID, see: https://developer.foursquare.com/docs/venues/venues
@@ -206,19 +158,11 @@ var model = function(modelData) {
     // if you click a search result, the info-bubble above the corresponding
     // marker shall be opened
     this.showInfo = function() {
-        console.log("you clicked " + self.name);
-        console.log("id: " + self.id);
-        console.log("category: " + self.category);
-        console.log("street: " + self.street);
-        console.log("city: " + self.city);
-        console.log("opening times: " + self.openingTimes);
-        console.log("rating: " + self.rating);
-        console.log("cat: " + self.cat);
         self.infowindow.open(map, self.marker);
     }
 
     // generate map-markers
-    // custom icons: https://sites.google.com/site/gmapsdevelopment/
+    // custom icons for markers: https://sites.google.com/site/gmapsdevelopment/
     switch (self.category) {
         case "food":
             var iconLink = 'http://maps.google.com/mapfiles//kml/pal2/icon32.png';
@@ -246,7 +190,11 @@ function viewModel() {
     this.itemlist = ko.observableArray([]);
 
     // init google maps
-    initMap();
+    try {
+        initMap();
+    } catch(error) {
+        alert("Sorry, we are having problems with loading google maps. Please try refreshing your browser page.");
+    }
 
     // populate the itemlist with all items from our model-data
     modelData.forEach(function(item) {
