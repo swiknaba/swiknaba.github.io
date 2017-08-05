@@ -70,27 +70,32 @@ modelData = [
     {
         name: "Bergmann Pizza",
         yelpID: "bergmann-pizza-berlin-2",
-        category: "food"
+        category: "food",
+        fsquareID: "4ece1682e3007feb7ad1bd94"
     },
     {
         name: "L'Angolo del Gelato",
         yelpID: "l-angolo-del-gelato-berlin-2",
-        category: "food"
+        category: "food",
+        fsquareID: "4e89c3e1d22d940664f12faf"
     },
     {
         name: "Pharmacy: Alte Spree Apotheke",
         yelpID: "alte-spree-apotheke-berlin",
-        category: "other"
+        category: "other",
+        fsquareID: "532d9a8e498ec8516363d00d"
     },
     {
         name: "Borsighallen",
         yelpID: "hallen-am-borsigturm-berlin?osq=borsighallen",
-        category: "shopping"
+        category: "shopping",
+        fsquareID: "4b8d374ff964a520deed32e3"
     },
     {
         name: "Lucky Chinese",
         yelpID: "lucky-chinese-berlin",
-        category: "food"
+        category: "food",
+        fsquareID: "4cfb87c0feec6dcb2b314736"
     }
 ];
 
@@ -98,29 +103,25 @@ modelData = [
 var model = function(modelData) {
     var self = this;
     this.name = modelData.name;
-    this.yelpID = modelData.yelpID;
+    this.id = modelData.fsquareID;
     this.category = modelData.category;
     this.visible = ko.observable();
+    this.URL = '';
+    this.street = '';
+    this.city = '';
+    this.hours = '';
+    this.rating = '';
 
-    // use jQuery: http://api.jquery.com/jQuery.getJSON/
-    // to fetch information about our data from yelp
-    // Yelp: https://www.yelp.com/developers/documentation/v3/business
-    var yelpURL = `https://api.yelp.com/v3/businesses/${this.yelpID}`;
+    var fsquareURL = 'https://api.foursquare.com/v2/venues/' + this.id + '&client_id=15S4QDKN4EJG4MNX2XPXUSLBWB3ADMHJYJY5PA2FOZNPHLTK&client_secret=PPCH5JDLNLMPTFBWFBEUO4GOO3B4HIVNZ0IRYJMLRNGTWVHK';
+
     $.ajax({
-        type: "GET",
-        beforeSend: function(request) {
-            request.withCredentials = true;
-            request.setRequestHeader("Authorization", "Bearer " + localStorage['token']);
-        },
-        url: yelpURL,
-        dataType: "jsonp",
-        success: function(yelp_jqxhr) {
-            console.log("es klappt");
-            // var yelp = yelp_jqxhr.responseJSON;
-            window.yelp = yelp_jqxhr;
-        },
-        fail: function() {
-            alert("Sorry, we are having problems fetching the relevant information from YELP. Please try refreshing your browser.");
+        type: 'GET',
+        url: 'fsquareURL',
+        dataType: 'json',
+        success: function(response) {
+            fsquare = response.response;
+            console.log("getJSON success");
+            window.fsquare = fsquare;
         }
     });
 

@@ -1,3 +1,36 @@
+// ===================
+
+// var model = function(modelData) {
+
+// THE PROBLEM WITH YELP: doesn't support CORS, jsonp doesn't work as well,
+// giving up on it after a few frustrating days, now new approach with foursquare
+// use jQuery: http://api.jquery.com/jQuery.getJSON/
+// to fetch information about our data from yelp
+// Yelp: https://www.yelp.com/developers/documentation/v3/business
+// var yelpURL = `https://api.yelp.com/v3/businesses/${this.yelpID}`;
+// $.ajax({
+//     type: "GET",
+//     beforeSend: function(request) {
+//         request.withCredentials = true;
+//         request.setRequestHeader("Authorization", "Bearer " + localStorage['token']);
+//     },
+//     url: yelpURL,
+//     dataType: "jsonp",
+//     success: function(yelp_jqxhr) {
+//         console.log("es klappt");
+//         // var yelp = yelp_jqxhr.responseJSON;
+//         window.yelp = yelp_jqxhr;
+//     },
+//     fail: function() {
+//         alert("Sorry, we are having problems fetching the relevant information from YELP. Please try refreshing your browser.");
+//     }
+// });
+
+// }
+
+// ===================
+
+
 // if deployed on a server, this should be put into server-side code
 // e.g. like for the previous udacity project "catalog"
 
