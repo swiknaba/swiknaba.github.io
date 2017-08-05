@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="UFT-8">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/awesomplete.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>Neighborhood Map</title>
+</head>
+<body>
+    <!--<div data-bind="with: currentCat">
+        <! - - the "with"-statement makes sure, that everything inside this
+             <div> will always refer to the currentCat
+             the $parent.incrementCounter makes sure, that we have access to the
+             function which needs to be run on the current model, not the current cat
+             which does not have this function
+        - ->
+        <h2 data-bind="text: name"></h2>
+        <div data-bind="text: clickCount"></div>
+        <img src="" alt="cute cat" data-bind="click: $parent.incrementCounter, attr: {src: imgSrc}">
+    </div> -->
+
+
+<div class="search-div">
+    <input id="search-input" class="form-control" placeholder="Find cool places.." data-bind="textInput: Query, valueUpdate: 'afterkeydown'">
+    <ul class="list-unstyled" data-bind="visible: Query, template: {name: 'item', foreach: searchResults}">
+    </ul>
+    <!--<ul class="list-unstyled" data-bind="foreach: itemlist">
+        <li data-bind="text: name"></li>
+        <script>console.log("juhu");</script>
+    </ul> -->
+</div>
+
+<!-- template bindng: http://knockoutjs.com/documentation/template-binding.html -->
+<script type="text/html" id="item">
+    <li class="search-output" data-bind="text: name, click: showInfo"></li>
+</script>
+
+<div class="filter">
+    <button class="filter-option food btn btn-warning btn-block">Food</button>
+    <button class="filter-option shopping btn btn-info btn-block">Shopping</button>
+    <button class="filter-option other btn btn-success btn-block">Other</button>
+</div>
+
+
+<div id="map"></div>
+
+
+<!--<script src="js/awesomplete.js"></script> -->
+<script src="js/knockout-3.4.2.js"></script>
+<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/yelp_token.js"></script>
+<script src="js/app.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfO6T7ApDkqyAnyROtUr7oQsy8UUjSxhw&callback=initMap" async defer></script>
+</body>
+</html>

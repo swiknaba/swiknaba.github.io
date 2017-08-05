@@ -1,0 +1,88 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+#map {
+    height: 100%;
+}
+
+
+.search-div {
+    position: absolute;
+    z-index: 1;
+    left: 15px;
+    top: 15px;
+}
+
+.search-output, #search-input {
+    font-size: 2em;
+    min-height: 50px;
+    opacity: 0.75;
+}
+
+.search-output {
+    z-index: 2;
+    padding-left: 10px;
+    background-color: rgba(200, 200, 200, 0.5);
+    border-top: 1px solid rgba(100, 100, 100, 0.8);
+}
+
+
+.filter {
+    z-index: 1;
+    position: absolute;
+    left: 0;
+    /*bottom: 62%;*/
+    top: 38%;
+    min-height: 175px;
+    margin-top: 75px;
+}
+
+.filter-option {
+    position: relative;
+    opacity: 0.75;
+    left: -10px;
+}
+
+/*
+.food {
+    background-color: #ff751a;
+}
+.shopping {
+    background-color: #66b3ff;
+}
+.other {
+    background-color: #df80ff;
+}*/
+
+
+/* iPad: > 750px, iPhone: < 420px */
+@media (max-width: 750px) {
+    .search-div,
+    #search-input {
+        width: 100%;
+        top: 0;
+        left: 0;
+    }
+
+    .filter {
+        bottom: 0;
+        float: left;
+        left: auto;
+    }
+}
+
+@media (max-height: 400px) {
+    .filter {
+        z-index: 0;
+    }
+}
+
+@media (max-height: 700px) {
+    .filter {
+        bottom: 38%;
+    }
+}
