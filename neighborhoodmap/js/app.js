@@ -107,6 +107,7 @@ var model = function(modelData) {
     this.openingTimes = '';  // Contains the opening hours of this point of interest
     this.rating = '';  // Numerical rating of the venue (0 through 10)
     this.cat = '';  // more precise category (e.g. Pizza Place)
+    this.iconLink = '';  // google maps special icon
     this.visible = ko.observable();
 
     // API endpoint of forsquare, check out: https://developer.foursquare.com/docs/venues/search
@@ -170,33 +171,34 @@ var model = function(modelData) {
                 self.marker.setAnimation(null);
             }, 750);
         }
-    }
+    };
 
     // if you click a search result, the info-bubble above the corresponding
     // marker shall be opened
     this.showInfo = function() {
         infowindow.open(map, self.marker);
         self.markerAnimation();
-    }
+    };
 
     // generate map-markers
     // custom icons for markers: https://sites.google.com/site/gmapsdevelopment/
+
     switch (self.category) {
         case "food":
-            var iconLink = 'https://maps.google.com/mapfiles//kml/pal2/icon32.png';
+            this.iconLink = 'https://maps.google.com/mapfiles//kml/pal2/icon32.png';
             break;
         case "shopping":
-            var iconLink = 'https://maps.google.com/mapfiles//kml/pal3/icon26.png';
+            this.iconLink = 'https://maps.google.com/mapfiles//kml/pal3/icon26.png';
             break;
         case "other":
-            var iconLink = 'https://maps.google.com/mapfiles//kml/pal3/icon53.png';
+            this.iconLink = 'https://maps.google.com/mapfiles//kml/pal3/icon53.png';
             break;
     }
     this.marker = new google.maps.Marker({
         position: {lat: this.lat, lng: this.lng},
         title: this.name,  // appears as tooltip
         animation: google.maps.Animation.DROP,
-        icon: iconLink
+        icon: this.iconLink
     });
     // add marker to the map (necessary if not called within initMap): this.marker.setMap(map);
     // Udactiy: Map (...) displays the filtered subset of location markers when a filter is applied.
@@ -207,7 +209,7 @@ var model = function(modelData) {
             self.marker.setMap(null);
         }
     });
-}
+};
 
 
 function viewModel() {
