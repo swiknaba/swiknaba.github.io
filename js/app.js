@@ -89,6 +89,9 @@ modelData = [
 var clientID = "15S4QDKN4EJG4MNX2XPXUSLBWB3ADMHJYJY5PA2FOZNPHLTK";
 var clientSecret = "PPCH5JDLNLMPTFBWFBEUO4GOO3B4HIVNZ0IRYJMLRNGTWVHK&v=20170801";
 
+// we want only one info-bubble above a marker to be shown at a time to not clutter the view
+// therefore declare it globally, according to stackoverflow: https://stackoverflow.com/questions/19067027/close-all-info-windows-google-maps-api-v3
+var infowindow = [];
 
 // the model, which defines information and functions on our model-data
 // note the "this" as second argument of the computed-function, so that you
@@ -125,29 +128,32 @@ var model = function(modelData) {
             self.openingTimes = fsquare.hours;
             self.rating = fsquare.rating;
             self.cat = fsquare.categories[0].shortName;
+            self.URL = "https://foursquare.com/v/" + fsquare.id;
             // some values might be undefined if not provided, re-set those to empty string
             if (typeof self.street == 'undefined') { self.street = '<i>unknown</i>'; }
             if (typeof self.city == 'undefined') { self.city = ''; }
             if (typeof self.openingTimes == 'undefined') { self.openingTimes = '<i>not available..</i>'; }
             if (typeof self.rating == 'undefined') { self.rating = '<i>not yet rated...</i>'; }
             if (typeof self.cat == 'undefined') { self.cat = ''; }
-
             // generate info-windows for each marker, following the documentation
             // https://developers.google.com/maps/documentation/javascript/infowindows
             // with improved string-concenation (just for fun)
             var contentString = [];
             contentString.push('<div class="contentString">',
                                   '<p><b>', self.name, '</b>',
-                                  '<br><i>', self.cat, '</i></p>',
+                                  '<br><i>', self.cat, '</i>',
+                                  '<a target="_blank" href="', self.URL, '"><img border="0" src="img/foursquare.png" alt="foursquare logo" height="30" style="display: inline; float: right;"></a>',
+                                  '</p>',
                                   '<p>', self.street, '<br>', self.city, '</p>',
                                   '<p>Opening hours:<br>', self.openingTimes, '</p>',
                                   '<p>User rating (0-10): ', self.rating, '</p>',
                                '</div>');
-            self.infowindow = new google.maps.InfoWindow({
+            infowindow = new google.maps.InfoWindow({
                 content: contentString.join('')
             });
             self.marker.addListener('click', function() {
-                self.infowindow.open(map, self.marker);
+                infowindow.open(map, self.marker);
+                self.markerAnimation();
             });
         },
         fail: function() {
@@ -155,10 +161,22 @@ var model = function(modelData) {
         }
     });
 
+    this.markerAnimation = function() {
+        if (self.marker.getAnimation() !== null) {
+            self.marker.setAnimation(null);
+        } else {
+            self.marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function() {
+                self.marker.setAnimation(null);
+            }, 750);
+        }
+    }
+
     // if you click a search result, the info-bubble above the corresponding
     // marker shall be opened
     this.showInfo = function() {
-        self.infowindow.open(map, self.marker);
+        infowindow.open(map, self.marker);
+        self.markerAnimation();
     }
 
     // generate map-markers
@@ -177,10 +195,18 @@ var model = function(modelData) {
     this.marker = new google.maps.Marker({
         position: {lat: this.lat, lng: this.lng},
         title: this.name,  // appears as tooltip
+        animation: google.maps.Animation.DROP,
         icon: iconLink
     });
-    // add marker to the map (necessary if not called within initMap)
-    this.marker.setMap(map);
+    // add marker to the map (necessary if not called within initMap): this.marker.setMap(map);
+    // Udactiy: Map (...) displays the filtered subset of location markers when a filter is applied.
+    this.showMarker = ko.computed(function() {
+        if (self.visible() === true) {
+            self.marker.setMap(map);
+        } else {
+            self.marker.setMap(null);
+        }
+    });
 }
 
 
