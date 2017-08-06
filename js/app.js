@@ -183,13 +183,13 @@ var model = function(modelData) {
     // custom icons for markers: https://sites.google.com/site/gmapsdevelopment/
     switch (self.category) {
         case "food":
-            var iconLink = 'http://maps.google.com/mapfiles//kml/pal2/icon32.png';
+            var iconLink = 'https://maps.google.com/mapfiles//kml/pal2/icon32.png';
             break;
         case "shopping":
-            var iconLink = 'http://maps.google.com/mapfiles//kml/pal3/icon26.png';
+            var iconLink = 'https://maps.google.com/mapfiles//kml/pal3/icon26.png';
             break;
         case "other":
-            var iconLink = 'http://maps.google.com/mapfiles//kml/pal3/icon53.png';
+            var iconLink = 'https://maps.google.com/mapfiles//kml/pal3/icon53.png';
             break;
     }
     this.marker = new google.maps.Marker({
