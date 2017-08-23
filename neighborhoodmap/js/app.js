@@ -93,22 +93,22 @@ var clientSecret = "PPCH5JDLNLMPTFBWFBEUO4GOO3B4HIVNZ0IRYJMLRNGTWVHK&v=20170801"
 // therefore declare it globally, according to stackoverflow: https://stackoverflow.com/questions/19067027/close-all-info-windows-google-maps-api-v3
 var infowindow;
 
+// info-window popping up if you click a marker on the map
 function bindInfoWindow(marker, map, infowindow, markerAnimation) {
     marker.addListener('click', function() {
         if (infowindow) {
-            console.log("bindInfoWindow, if infowindow");
             infowindow.close();
         }
         infowindow.open(map, marker);
         markerAnimation();
     });
 }
+// info-window popping up if you click a search result
 function clickInfoWindow(marker, map, infowindow, markerAnimation) {
     if (infowindow) {
         infowindow.close();
     }
     infowindow.open(map, marker);
-    console.log("clickInfoWindow");
     markerAnimation();
 }
 
@@ -129,7 +129,6 @@ var model = function(modelData) {
     this.iconLink = '';  // google maps special icon
     this.visible = ko.observable();
     this.contentString = [];
-    // this.infowindow = [];
 
     // API endpoint of forsquare, check out: https://developer.foursquare.com/docs/venues/search
     // OAuth doesn't allow CORS, so one can't directly fetch location info via the forsquareID, see: https://developer.foursquare.com/docs/venues/venues
@@ -157,7 +156,6 @@ var model = function(modelData) {
             // generate info-windows for each marker, following the documentation
             // https://developers.google.com/maps/documentation/javascript/infowindows
             // with improved string-concenation (just for fun)
-            // var contentString = [];
             self.contentString.push('<div class="contentString">',
                                   '<p><b>', self.name, '</b>',
                                   '<br><i>', self.cat, '</i>',
@@ -171,11 +169,7 @@ var model = function(modelData) {
             self.infowindow = new google.maps.InfoWindow({
                 content: self.contentString
             });
-            // self.marker.addListener('click', function() {
-            //     if (infowindow) {infowindow.close();}
-            //     infowindow.open(map, self.marker);
-            //     self.markerAnimation();
-            // });
+            // info window which pops up above map-marker
             bindInfoWindow(self.marker, map, self.infowindow, self.markerAnimation);
         })
         .fail(function() {
@@ -196,15 +190,11 @@ var model = function(modelData) {
     // if you click a search result, the info-bubble above the corresponding
     // marker shall be opened
     this.showInfo = function() {
-        // if (infowindow) {infowindow.close();}
-        // infowindow.open(map, self.marker);
-        // self.markerAnimation();
         clickInfoWindow(self.marker, map, self.infowindow, self.markerAnimation);
     };
 
     // generate map-markers
     // custom icons for markers: https://sites.google.com/site/gmapsdevelopment/
-
     switch (self.category) {
         case "food":
             self.iconLink = 'https://maps.google.com/mapfiles//kml/pal2/icon32.png';
