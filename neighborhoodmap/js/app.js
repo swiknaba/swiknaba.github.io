@@ -15,7 +15,7 @@
 var map;
   // there are several zoom levels:
   // 1: world, 5: continent, 10: city, 15: streets, 20: buildings
-function initMap () {
+function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 52.588862, lng: 13.278735},
         zoom: 15,
@@ -208,7 +208,8 @@ var model = function(modelData) {
 
     // generate map-markers
     // custom icons for markers: https://sites.google.com/site/gmapsdevelopment/
-        switch (self.category) {
+
+    switch (self.category) {
         case "food":
             self.iconLink = 'https://maps.google.com/mapfiles//kml/pal2/icon32.png';
             break;
