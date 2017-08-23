@@ -66,12 +66,22 @@ html, body {
         width: 100%;
         top: 0;
         left: 0;
+        /*opacity: 1;*/
     }
 
     .filter {
         bottom: 0;
         float: left;
         left: auto;
+    }
+
+    .search-output,
+    #search-input,
+    .filter-option {
+        opacity: 1;
+        background-color: white;
+        font-size: 1em;
+        min-height: 25px;
     }
 }
 

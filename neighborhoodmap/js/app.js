@@ -15,7 +15,7 @@
 var map;
   // there are several zoom levels:
   // 1: world, 5: continent, 10: city, 15: streets, 20: buildings
-function initMap() {
+function initMap () {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 52.588862, lng: 13.278735},
         zoom: 15,
@@ -25,7 +25,7 @@ function initMap() {
 // ============================================================================
 
 
-//example-data, all in Berlin, district Alt-Tegel
+// example-data, all in Berlin, district Alt-Tegel
 modelData = [
     {
         name: "Bergmann Pizza",
@@ -91,7 +91,26 @@ var clientSecret = "PPCH5JDLNLMPTFBWFBEUO4GOO3B4HIVNZ0IRYJMLRNGTWVHK&v=20170801"
 
 // we want only one info-bubble above a marker to be shown at a time to not clutter the view
 // therefore declare it globally, according to stackoverflow: https://stackoverflow.com/questions/19067027/close-all-info-windows-google-maps-api-v3
-var infowindow = [];
+var infowindow;
+
+function bindInfoWindow(marker, map, infowindow, markerAnimation) {
+    marker.addListener('click', function() {
+        if (infowindow) {
+            console.log("bindInfoWindow, if infowindow");
+            infowindow.close();
+        }
+        infowindow.open(map, marker);
+        markerAnimation();
+    });
+}
+function clickInfoWindow(marker, map, infowindow, markerAnimation) {
+    if (infowindow) {
+        infowindow.close();
+    }
+    infowindow.open(map, marker);
+    console.log("clickInfoWindow");
+    markerAnimation();
+}
 
 // the model, which defines information and functions on our model-data
 // note the "this" as second argument of the computed-function, so that you
@@ -107,7 +126,10 @@ var model = function(modelData) {
     this.openingTimes = '';  // Contains the opening hours of this point of interest
     this.rating = '';  // Numerical rating of the venue (0 through 10)
     this.cat = '';  // more precise category (e.g. Pizza Place)
+    this.iconLink = '';  // google maps special icon
     this.visible = ko.observable();
+    this.contentString = [];
+    // this.infowindow = [];
 
     // API endpoint of forsquare, check out: https://developer.foursquare.com/docs/venues/search
     // OAuth doesn't allow CORS, so one can't directly fetch location info via the forsquareID, see: https://developer.foursquare.com/docs/venues/venues
@@ -138,8 +160,8 @@ var model = function(modelData) {
             // generate info-windows for each marker, following the documentation
             // https://developers.google.com/maps/documentation/javascript/infowindows
             // with improved string-concenation (just for fun)
-            var contentString = [];
-            contentString.push('<div class="contentString">',
+            // var contentString = [];
+            self.contentString.push('<div class="contentString">',
                                   '<p><b>', self.name, '</b>',
                                   '<br><i>', self.cat, '</i>',
                                   '<a target="_blank" href="', self.URL, '"><img border="0" src="img/foursquare.png" alt="foursquare logo" height="30" style="display: inline; float: right;"></a>',
@@ -148,15 +170,18 @@ var model = function(modelData) {
                                   '<p>Opening hours:<br>', self.openingTimes, '</p>',
                                   '<p>User rating (0-10): ', self.rating, '</p>',
                                '</div>');
-            infowindow = new google.maps.InfoWindow({
-                content: contentString.join('')
+            self.contentString = self.contentString.join('');
+            self.infowindow = new google.maps.InfoWindow({
+                content: self.contentString
             });
-            self.marker.addListener('click', function() {
-                infowindow.open(map, self.marker);
-                self.markerAnimation();
-            });
+            // self.marker.addListener('click', function() {
+            //     if (infowindow) {infowindow.close();}
+            //     infowindow.open(map, self.marker);
+            //     self.markerAnimation();
+            // });
+            bindInfoWindow(self.marker, map, self.infowindow, self.markerAnimation);
         },
-        fail: function() {
+        error: function() {
             alert("Sorry, we are having problems fetching information from foursquare. Pleasy try refreshing your browswer page.");
         }
     });
@@ -170,33 +195,35 @@ var model = function(modelData) {
                 self.marker.setAnimation(null);
             }, 750);
         }
-    }
+    };
 
     // if you click a search result, the info-bubble above the corresponding
     // marker shall be opened
     this.showInfo = function() {
-        infowindow.open(map, self.marker);
-        self.markerAnimation();
-    }
+        // if (infowindow) {infowindow.close();}
+        // infowindow.open(map, self.marker);
+        // self.markerAnimation();
+        clickInfoWindow(self.marker, map, self.infowindow, self.markerAnimation);
+    };
 
     // generate map-markers
     // custom icons for markers: https://sites.google.com/site/gmapsdevelopment/
-    switch (self.category) {
+        switch (self.category) {
         case "food":
-            var iconLink = 'https://maps.google.com/mapfiles//kml/pal2/icon32.png';
+            self.iconLink = 'https://maps.google.com/mapfiles//kml/pal2/icon32.png';
             break;
         case "shopping":
-            var iconLink = 'https://maps.google.com/mapfiles//kml/pal3/icon26.png';
+            self.iconLink = 'https://maps.google.com/mapfiles//kml/pal3/icon26.png';
             break;
         case "other":
-            var iconLink = 'https://maps.google.com/mapfiles//kml/pal3/icon53.png';
+            self.iconLink = 'https://maps.google.com/mapfiles//kml/pal3/icon53.png';
             break;
     }
     this.marker = new google.maps.Marker({
         position: {lat: this.lat, lng: this.lng},
         title: this.name,  // appears as tooltip
         animation: google.maps.Animation.DROP,
-        icon: iconLink
+        icon: self.iconLink
     });
     // add marker to the map (necessary if not called within initMap): this.marker.setMap(map);
     // Udactiy: Map (...) displays the filtered subset of location markers when a filter is applied.
@@ -207,7 +234,7 @@ var model = function(modelData) {
             self.marker.setMap(null);
         }
     });
-}
+};
 
 
 function viewModel() {
@@ -237,6 +264,12 @@ function viewModel() {
         });
     });
 
+}
+
+
+// error handling for google maps
+function googleError() {
+    alert("Unfortunately we couldn't load google maps. Please try to refresh your browser!");
 }
 
 // "Uncaught ReferenceError: google is not defined" @ "this.marker = new google.maps.Marker({.." inside

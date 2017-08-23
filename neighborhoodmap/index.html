@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="eng">
 <head>
-    <meta name="viewport" content="initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UFT-8">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -11,7 +11,7 @@
 
 <div class="search-div">
     <input id="search-input" class="form-control" placeholder="Find cool places.." data-bind="textInput: Query, valueUpdate: 'afterkeydown'">
-    <ul class="list-unstyled" data-bind="visible: Query, template: {name: 'item', foreach: searchResults}">
+    <ul class="list-unstyled" data-bind="Query, template: {name: 'item', foreach: searchResults}">
     </ul>
 </div>
 
@@ -34,6 +34,6 @@ the category of the marker directly on the map -->
 <script src="js/knockout-3.4.2.js"></script>
 <script src="js/jquery-3.2.1.min.js"></script>
 <script src="js/app.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyBfO6T7ApDkqyAnyROtUr7oQsy8UUjSxhw&callback=runApp" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyBfO6T7ApDkqyAnyROtUr7oQsy8UUjSxhw&callback=runApp" async defer onerror="googleError()"></script>
 </body>
 </html>
