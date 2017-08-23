@@ -138,11 +138,8 @@ var model = function(modelData) {
 
     // ajax call to get information on point of interest
     // response: https://developer.foursquare.com/docs/responses/venue
-    $.ajax({
-        type: 'GET',
-        url: fsquareURL,
-        dataType: 'json',
-        success: function(data) {
+    $.ajax({url: fsquareURL})
+        .done(function(data) {
             fsquare = data.response.venues[0];
             console.log("getJSON success: " + self.name);
             self.street = fsquare.location.address;
@@ -180,11 +177,10 @@ var model = function(modelData) {
             //     self.markerAnimation();
             // });
             bindInfoWindow(self.marker, map, self.infowindow, self.markerAnimation);
-        },
-        error: function() {
+        })
+        .fail(function() {
             alert("Sorry, we are having problems fetching information from foursquare. Pleasy try refreshing your browswer page.");
-        }
-    });
+        });
 
     this.markerAnimation = function() {
         if (self.marker.getAnimation() !== null) {
@@ -277,6 +273,9 @@ function viewModel() {
         var filter = self.Query().toLowerCase();
         return ko.utils.arrayFilter(self.itemlist(), function(item) {
             var result = (item.name.toLowerCase().search(filter) >= 0);
+            // show search results when typing in case they have been hided before
+            self.showHideResults(true);
+            self.showOrHide('hide');
             item.visible(result);
             return result;
         });
