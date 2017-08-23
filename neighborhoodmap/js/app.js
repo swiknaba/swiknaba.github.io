@@ -243,6 +243,19 @@ function viewModel() {
     this.Query = ko.observable('');
     this.itemlist = ko.observableArray([]);
 
+    // button to show/hide search when mobile phone used for viewing, because search results could take up
+    // too much space
+    this.showOrHide = ko.observable('hide');
+    this.showHideResults = ko.observable(true);
+    this.showHideButton = function(showOrHide) {
+        return (function(){
+            var visibleSearch;
+            this.showOrHide() == 'hide' ? (visibleSearch = false, this.showOrHide('show')) : (visibleSearch = true, this.showOrHide('hide'));
+            this.showHideResults(visibleSearch);
+            console.log(visibleSearch + " hide that button: " + this.showOrHide());
+        });
+    };
+
     // init google maps
     try {
         initMap();

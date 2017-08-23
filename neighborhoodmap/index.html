@@ -10,8 +10,11 @@
 <body>
 
 <div class="search-div">
-    <input id="search-input" class="form-control" placeholder="Find cool places.." data-bind="textInput: Query, valueUpdate: 'afterkeydown'">
-    <ul class="list-unstyled" data-bind="Query, template: {name: 'item', foreach: searchResults}">
+    <div class="input-group">
+        <input id="search-input" class="form-control" placeholder="Find cool places.." data-bind="textInput: Query, valueUpdate: 'afterkeydown'">
+        <span class="input-group-addon" id="hide-search-btn" data-bind="click: showHideButton(), text: showOrHide"></span>
+    </div>
+    <ul class="list-unstyled" data-bind="visible: showHideResults, Query, template: {name: 'item', foreach: searchResults}">
     </ul>
 </div>
 
