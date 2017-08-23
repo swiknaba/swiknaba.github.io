@@ -250,9 +250,13 @@ function viewModel() {
     this.showHideButton = function(showOrHide) {
         return (function(){
             var visibleSearch;
-            this.showOrHide() == 'hide' ? (visibleSearch = false, this.showOrHide('show')) : (visibleSearch = true, this.showOrHide('hide'));
-            this.showHideResults(visibleSearch);
-            console.log(visibleSearch + " hide that button: " + this.showOrHide());
+            if (this.showOrHide() == 'hide') {
+                this.showHideResults(false);
+                this.showOrHide('show');
+            } else {
+                this.showHideResults(true);
+                this.showOrHide('hide');
+            }
         });
     };
 
